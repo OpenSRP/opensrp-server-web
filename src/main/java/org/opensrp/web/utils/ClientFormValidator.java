@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,18 +30,24 @@ public class ClientFormValidator {
 
 	private static final Logger logger = LogManager.getLogger(ClientFormValidator.class.toString());
 
-	private final ArrayList<String> jsonPathForSubFormReferences = new ArrayList<>();
+	private ArrayList<String> jsonPathForSubFormReferences = new ArrayList<>();
 
-	private final ArrayList<String> jsonPathForRuleReferences = new ArrayList<>();
+	private ArrayList<String> jsonPathForRuleReferences = new ArrayList<>();
 
-	private final ArrayList<String> jsonPathForPropertyFileReferences = new ArrayList<>();
+	private ArrayList<String> jsonPathForPropertyFileReferences = new ArrayList<>();
 
-	private final ClientFormService clientFormService;
+	private ClientFormService clientFormService;
 
 	private static final String PROPERTIES_FILE_NAME = "properties_file_name";
 
-	public ClientFormValidator(@NonNull ClientFormService clientFormService) {
-		this.clientFormService = clientFormService;
+    private ClientFormValidator() {
+        initialiseSubFormJsonPathReferences();
+        initialiseRuleJsonPathReferences();
+        initialisePropertiesFileJsonPathReferences();
+    }
+
+    public ClientFormValidator(@NonNull ClientFormService clientFormService) {
+        this.clientFormService = clientFormService;
 
 		initialiseSubFormJsonPathReferences();
 		initialiseRuleJsonPathReferences();
@@ -211,5 +216,29 @@ public class ClientFormValidator {
 			logger.info("", exception);
 		}
 		return fieldsMap;
+	}
+
+	public ArrayList<String> getJsonPathForSubFormReferences() {
+		return jsonPathForSubFormReferences;
+	}
+
+	public void setJsonPathForSubFormReferences(ArrayList<String> jsonPathForSubFormReferences) {
+		this.jsonPathForSubFormReferences = jsonPathForSubFormReferences;
+	}
+
+	public ArrayList<String> getJsonPathForRuleReferences() {
+		return jsonPathForRuleReferences;
+	}
+
+	public void setJsonPathForRuleReferences(ArrayList<String> jsonPathForRuleReferences) {
+		this.jsonPathForRuleReferences = jsonPathForRuleReferences;
+	}
+
+	public ArrayList<String> getJsonPathForPropertyFileReferences() {
+		return jsonPathForPropertyFileReferences;
+	}
+
+	public void setJsonPathForPropertyFileReferences(ArrayList<String> jsonPathForPropertyFileReferences) {
+		this.jsonPathForPropertyFileReferences = jsonPathForPropertyFileReferences;
 	}
 }

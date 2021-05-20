@@ -594,6 +594,9 @@
                 <configuration>
                     <destFile>${basedir}/target/coverage-reports/jacoco-unit.exec</destFile>
                     <dataFile>${basedir}/target/coverage-reports/jacoco-unit.exec</dataFile>
+                    <excludes>
+                        <exclude>org/opensrp/web/utils/InitialFormConfigUploadUtil.java</exclude>
+                    </excludes>
                 </configuration>
                 <executions>
                     <execution>
@@ -622,6 +625,15 @@
                         <version>2.3.1</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+            <!-- Remove the doc config properties file -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <!-- This is where the exclusion occurs -->
+                    <packagingExcludes>**/doc_config_script_configs.properties</packagingExcludes>
+                </configuration>
             </plugin>
         </plugins>
     </build>
