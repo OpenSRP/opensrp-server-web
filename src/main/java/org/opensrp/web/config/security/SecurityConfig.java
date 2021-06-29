@@ -28,6 +28,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.io.Resource;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -93,7 +94,6 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 			.mvcMatchers("/").permitAll()
 			.mvcMatchers("/logout.do").permitAll()
 			.mvcMatchers("/rest/viewconfiguration/**").permitAll()
-			.mvcMatchers("/rest/viewconfiguration/**").permitAll()
 			.mvcMatchers("/rest/config/keycloak").permitAll()
 			.mvcMatchers("/rest/*/getAll").hasRole(Role.ALL_EVENTS)
 			.mvcMatchers(OPTIONS,"/**").permitAll()
@@ -113,7 +113,8 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 		/* @formatter:off */
 		web.ignoring().mvcMatchers("/js/**")
 			.and().ignoring().mvcMatchers("/css/**")
-			.and().ignoring().mvcMatchers("/images/**");
+			.and().ignoring().mvcMatchers("/images/**")
+			.and().ignoring().mvcMatchers("/rest/rapidpro/**");
 		/* @formatter:on */
 	}
 	

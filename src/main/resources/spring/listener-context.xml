@@ -16,27 +16,13 @@
 	<task:scheduler pool-size="1" id="dhis2Scheduler"/>
     <task:scheduler pool-size="1" id="messageScheduler"/>
 
-	<beans profile="rapidpro">
-		<bean id="dhis2" class="org.opensrp.web.listener.DHIS2ConnectorListener"></bean>
+	<beans profile="dhis2-sync">
+		<bean id="dhis2" class="org.opensrp.web.listener.DHIS2ConnectorListener"/>
 		<task:scheduled-tasks scheduler="dhis2Scheduler">
 			<task:scheduled ref="dhis2"
 				method="vaccinationAggregatorDataCountForSendingToDHIS2"
 				cron="0 30 23 28-31 * ?" />
 		</task:scheduled-tasks>
 	</beans>
-
-
-	<beans profile="dhis2-sync">
-		<bean id="rapidproMessageListener"
-			class="org.opensrp.web.listener.RapidproMessageListener"></bean>
-		<task:scheduled-tasks
-			scheduler="messageScheduler">
-			<!-- <task:scheduled ref="rapidproMessageListener" method="fetchClient" 
-				cron="0 10 16 01-31 * ?" /> -->
-			<task:scheduled ref="rapidproMessageListener"
-				method="fetchClient" cron="*/60 * * * * *" />
-		</task:scheduled-tasks>
-	</beans>
-    
    
 </beans>

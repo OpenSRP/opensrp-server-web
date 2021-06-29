@@ -749,7 +749,7 @@
         <profile>
             <id>rapidpro</id>
             <properties>
-                <rapidpro.enabled>dhis2-sync</rapidpro.enabled>
+                <rapidpro.enabled>rapidpro</rapidpro.enabled>
             </properties>
         </profile>
         <profile>
