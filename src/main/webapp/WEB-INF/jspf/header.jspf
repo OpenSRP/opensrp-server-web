@@ -13,7 +13,12 @@
 
         <!-- Custom styles for this template -->
         <link href="css/auth.css" rel="stylesheet" />
-       
+
+        <!-- Custom styles for MIECD VIETNAM -->
+        <link href="css/vietnam.css" rel="stylesheet" />
+
+        <script type="text/javascript" src="js/vietnam.js"></script>
+
 
         <title>OpenSRP Authorization Server</title>
     </head>
