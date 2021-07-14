@@ -17,7 +17,7 @@
         <hibernate-entitymanager.version>5.4.12.Final</hibernate-entitymanager.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring.version>5.2.4.RELEASE</spring.version>
-        <spring.security.version>5.3.3.RELEASE</spring.security.version>
+        <spring.security.version>5.3.10.RELEASE</spring.security.version>
         <spring.security.oauth.version>2.5.0.RELEASE</spring.security.oauth.version>
         <spring.fox.swagger.version>2.9.2</spring.fox.swagger.version>
         <spring.data.redis>2.2.4.RELEASE</spring.data.redis>
