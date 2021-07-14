@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,7 +43,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static org.opensrp.web.Constants.LIMIT;
+import static org.opensrp.common.AllConstants.BaseEntity.SERVER_VERSIOIN;
+import static org.opensrp.web.Constants.*;
 
 @Controller("settingResourceV2")
 @RequestMapping(value = Constants.RestEndpointUrls.SETTINGS_V2_URL)
@@ -116,6 +118,8 @@ public class SettingResource {
 		boolean resolveSettings = RestUtils.getBooleanFilter(AllConstants.Event.RESOLVE_SETTINGS, request);
 		String metadataVersion = RestUtils.getStringFilter(METADATA_VERSION, request);
 		String limit = RestUtils.getStringFilter(LIMIT, request);
+		String orderByType = RestUtils.getStringFilter(ORDER_BY_TYPE, request);
+		String orderByFieldName = RestUtils.getStringFilter(ORDER_BY_FIELD_NAME, request);
 		Map<String, TreeNode<String, Location>> treeNodeHashMap = null;
 
 		if (StringUtils.isBlank(team) && StringUtils.isBlank(providerId) && StringUtils.isBlank(locationId)
@@ -148,6 +152,12 @@ public class SettingResource {
 		settingQueryBean.setServerVersion(lastSyncedServerVersion);
 		settingQueryBean.setMetadataVersion(lastMetadataVersion);
 		settingQueryBean.setLimit(pageLimit);
+		if (orderByType != null) {
+			settingQueryBean.setOrderByType(SettingSearchBean.OrderByType.valueOf(orderByType));
+		}
+		if (orderByFieldName != null) {
+			settingQueryBean.setOrderByFieldName(SettingSearchBean.FieldName.valueOf(orderByFieldName));
+		}
 		if (StringUtils.isNotBlank(identifier)) {
 			settingQueryBean.setIdentifier(identifier);
 		}
@@ -161,6 +171,55 @@ public class SettingResource {
 		List<Setting> settingList = extractSettings(settingConfigurations);
 
 		return new ResponseEntity<>(gson.toJson(settingList), RestUtils.getJSONUTF8Headers(), HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/getAll", produces = {MediaType.APPLICATION_JSON_VALUE })
+	public List<Setting> getAll(
+			@RequestParam(value = SERVER_VERSIOIN, required = false)  String serverVersion,
+			@RequestParam(value = AllConstants.Event.LOCATION_ID, required = false)  String locationId,
+			@RequestParam(value = AllConstants.Event.RESOLVE_SETTINGS, required = false)  boolean resolveSettings,
+			@RequestParam(required = false) String limit,
+			@RequestParam(value = METADATA_VERSION)  String metadataVersion,
+			@RequestParam(value = ORDER_BY_TYPE, required = false) String orderByType,
+			@RequestParam(value = ORDER_BY_FIELD_NAME, required = false) String orderByFieldName){
+
+		long lastSyncedServerVersion = 0L;
+		long lastMetadataVersion = 0L;
+		int pageLimit = 0;
+		if (StringUtils.isNotBlank(serverVersion)) {
+			lastSyncedServerVersion = Long.parseLong(serverVersion) + 1;
+		}
+
+		if (StringUtils.isNotBlank(metadataVersion)) {
+			lastMetadataVersion = Long.parseLong(metadataVersion);
+		}
+
+		if (StringUtils.isNotBlank(limit)) {
+			pageLimit = Integer.parseInt(limit);
+		}
+		Map<String, TreeNode<String, Location>> treeNodeHashMap = null;
+
+		SettingSearchBean settingQueryBean = new SettingSearchBean();
+		settingQueryBean.setServerVersion(lastSyncedServerVersion);
+		settingQueryBean.setMetadataVersion(lastMetadataVersion);
+		settingQueryBean.setLimit(pageLimit);
+		if (orderByType != null) {
+			settingQueryBean.setOrderByType(SettingSearchBean.OrderByType.valueOf(orderByType));
+		}
+		if (orderByFieldName != null) {
+			settingQueryBean.setOrderByFieldName(SettingSearchBean.FieldName.valueOf(orderByFieldName));
+		}
+		if (StringUtils.isNotBlank(locationId)) {
+			settingQueryBean.setResolveSettings(resolveSettings);
+			treeNodeHashMap = getChildParentLocationTree(locationId);
+		}
+
+		settingQueryBean.setETL(true);
+		List<SettingConfiguration> settingConfigurations = settingService.findSettings(settingQueryBean,
+				treeNodeHashMap);
+		List<Setting> settingList = extractSettings(settingConfigurations);
+
+		return settingList;
 	}
 
 	private List<Setting> extractSettings(List<SettingConfiguration> settingConfigurations) {
