@@ -71,9 +71,4 @@ public interface Constants {
             String KEY = "key";
         }
     }
-
-    enum AppStateToken {
-	    RAPIDPRO_STATE_TOKEN
-    }
-
 }
